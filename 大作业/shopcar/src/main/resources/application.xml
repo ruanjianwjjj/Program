@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="  
+     http://www.springframework.org/schema/beans   
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/context  
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+     http://www.springframework.org/schema/mvc  
+     http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+     http://www.springframework.org/schema/tx 
+     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+<!-- 导入jdbc配置文件 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+<!-- 注解的扫描路径 -->
+    <context:component-scan base-package="com.FY.*"/>
+<!-- 配置数据源 -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <!-- 基本属性 url、user、password -->  
+        <property name="driverClassName" value="${driver}" />  
+        <property name="url" value="${url}" />  
+        <property name="username" value="${username}" />  
+        <property name="password" value="${password}" />  
+    </bean>
+
+<!-- sqlSessionFactory -->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<!-- 引入mybatis核心配置文件 -->
+        <property name="configLocation" value="classpath:mybatis-config.xml" /> 
+        <!-- 数据源引入 -->
+        <property name="dataSource" ref="dataSource" />
+        <!-- 扫包方式设置别名 -->
+        <property name="typeAliasesPackage" value="com.FY.entity"/>
+        <!-- 关联上sql映射文件 -->
+        <property name="mapperLocations" value="classpath:com/FY/dao/*.xml"/>
+    </bean>
+<!-- 扫包方式创建Dao的实现类 -->    
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.FY.dao" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+    </bean>
+   
+  <!--   <bean id="gtypeServiceImpl" class="com.FY.service.GtypeServiceImpl">
+    	<property name="gtypeMapper" ref="gtypeMapper"></property>
+    </bean>    这个是什么注解还是啥来着，没怎么听懂，可以通过Impl文件里面注解的方式实现这个功能
+     -->
+<!-- 事务管理器 -->
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+<!-- 声明式事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>

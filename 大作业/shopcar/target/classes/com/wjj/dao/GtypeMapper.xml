@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wjj.dao.GtypeMapper">
+ 	<insert id="addGtype" parameterType="com.FY.entity.Gtype">
+ 		insert into gtype values(#{typeid},#{typename})
+ 	</insert>
+ 	<select id="selectGtype" parameterType="com.FY.entity.Gtype">
+ 		select * from gtype
+ 	</select>
+ 
+</mapper>
